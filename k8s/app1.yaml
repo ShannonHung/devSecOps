@@ -31,7 +31,7 @@ spec:
             - name: SPRING_DATASOURCE_URL
               value: jdbc:mysql://mysqldb:3306/simpleshop
             - name: SPRING_DATASOURCE_PASSWORD
-              value: passwd
+              value: csc1234
           resources: {}
 status: {}
 ---
