@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: simpleshopmysql
+  name: simpleshopmysql
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simpleshopmysql
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: simpleshopmysql
+    spec:
+      initContainers:
+      - name: init-cont
+        image: busybox
+        command: ['sh','c',while ! nc -z mysqldb 3306; do sleep 1; done;]
+      containers:
+      - image: shichoc/simpleshopmysql:0.0.1-SNAPSHOT
+        imagePullPolicy: IfNotPresent
+        name: simpleshopmysql
+        ports:
+          - containerPort: 8080
+        env:
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://mysqldb:3306/simpleshop
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: passwd
+        resources: {}
+status: {}
