@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd" updateCheck="false">
+
+    <!-- 磁碟快取位置 -->
+    <diskStore path="java.io.tmpdir"/>
+
+    <!-- maxEntriesLocalHeap:堆記憶體中最大快取物件數，0沒有限制 -->
+    <!-- maxElementsInMemory： 在記憶體中快取的element的最大數目。-->
+    <!-- eternal:elements是否永久有效，如果為true，timeouts將被忽略，element將永不過期 -->
+    <!-- timeToIdleSeconds:發呆秒數，發呆期間未訪問快取立即過期，當eternal為false時，這個屬性才有效，0為不限制 -->
+    <!-- timeToLiveSeconds:總存活秒數，當eternal為false時，這個屬性才有效，0為不限制 -->
+    <!-- overflowToDisk： 如果記憶體中資料超過記憶體限制，是否要快取到磁碟上 -->
+    <!-- statistics：是否收集統計資訊。如果需要監控快取使用情況，應該開啟這個選項。預設為關閉（統計會影響效能）。設定statistics="true"開啟統計 -->
+
+    <!--
+        預設快取
+        無過期時間，但 600 秒內無人訪問快取立即過期
+    -->
+    <defaultCache
+            maxElementsInMemory="1000"
+            eternal="false"
+            timeToIdleSeconds="120"
+            timeToLiveSeconds="0"
+            overflowToDisk="true">
+    </defaultCache>
+
+    <!--
+        xx業務快取
+        在有效的 120 秒內，如果連續 60 秒未訪問快取，則快取失效。
+        就算有訪問，也只會存活 120 秒。
+    -->
+    <cache name="productCache"
+           maxElementsInMemory="1000"
+           eternal="false"
+           timeToIdleSeconds="60"
+           timeToLiveSeconds="0"
+           overflowToDisk="false">
+    </cache>
+
+    <cache name="orderCache"
+           maxElementsInMemory="1000"
+           eternal="false"
+           timeToIdleSeconds="60"
+           timeToLiveSeconds="0"
+           overflowToDisk="false">
+    </cache>
+
+</ehcache>

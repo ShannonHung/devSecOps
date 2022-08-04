@@ -1,0 +1,229 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kioxia-idp
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      kioxia.share.station/server: kioxia-idp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        kioxia.share.station/server: kioxia-idp
+    spec:
+      containers:
+        - image: 192.168.0.100:30004/dev/kioxia-idp:latest
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sh", "-c", "sleep 10" ]
+          imagePullPolicy: Always
+          name: kioxia-idp
+          ports:
+            - containerPort: 8084
+              protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kioxia-pep
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      kioxia.share.station/server: kioxia-pep
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        kioxia.share.station/server: kioxia-pep
+    spec:
+      containers:
+        - image: 192.168.0.100:30004/dev/kioxia-pep:latest
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sh", "-c", "sleep 10" ]
+          imagePullPolicy: Always
+          name: kioxia-pep
+          ports:
+            - containerPort: 8085
+              protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kioxia-file
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      kioxia.share.station/server: kioxia-file
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        kioxia.share.station/server: kioxia-file
+    spec:
+      containers:
+        - image: 192.168.0.100:30004/dev/kioxia-file:latest
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sh", "-c", "sleep 10" ]
+          imagePullPolicy: Always
+          name: kioxia-file
+          ports:
+            - containerPort: 8086
+              protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kioxia-pdp
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      kioxia.share.station/server: kioxia-pdp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        kioxia.share.station/server: kioxia-pdp
+    spec:
+      containers:
+        - image: 192.168.0.100:30004/dev/kioxia-pdp:latest
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sh", "-c", "sleep 10" ]
+          imagePullPolicy: Always
+          name: kioxia-pdp
+          ports:
+            - containerPort: 8087
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    kioxia.share.station/server: kioxia
+  name: kioxia-public-svc
+spec:
+  type: NodePort
+  ports:
+    - port: 8085
+      protocol: TCP
+      targetPort: 8085
+      nodePort: 30085
+      name: kioxia-pep
+    - port: 8084
+      protocol: TCP
+      targetPort: 8084
+      nodePort: 30084
+      name: kioxia-idp
+    - port: 8086
+      protocol: TCP
+      targetPort: 8086
+      nodePort: 30086
+      name: kioxia-file
+    - port: 8087
+      protocol: TCP
+      targetPort: 8087
+      nodePort: 30087
+      name: kioxia-pdp
+  selector:
+    kioxia.share.station/server: kioxia
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    kioxia.share.station/server: kioxia-pep
+  name: kioxia-public-svc
+spec:
+  type: NodePort
+  ports:
+    - port: 8085
+      protocol: TCP
+      targetPort: 8085
+      nodePort: 30085
+      name: kioxia-pep
+  selector:
+    kioxia.share.station/server: kioxia-pep
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    kioxia.share.station/server: kioxia-idp
+  name: kioxia-public-svc
+spec:
+  type: NodePort
+  ports:
+    - port: 8084
+      protocol: TCP
+      targetPort: 8084
+      nodePort: 30084
+  selector:
+    kioxia.share.station/server: kioxia-idp
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    kioxia.share.station/server: kioxia
+  name: kioxia-idp
+spec:
+  ports:
+    - port: 8084
+      protocol: TCP
+      targetPort: 8084
+  selector:
+    kioxia.share.station/server: kioxia
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    kioxia.share.station/server: kioxia
+  name: kioxia-pep
+spec:
+  ports:
+    - port: 8085
+      protocol: TCP
+      targetPort: 8085
+  selector:
+    kioxia.share.station/server: kioxia
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    kioxia.share.station/server: kioxia
+  name: kioxia-file
+spec:
+  ports:
+    - port: 8086
+      protocol: TCP
+      targetPort: 8086
+  selector:
+    kioxia.share.station/server: kioxia
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    kioxia.share.station/server: kioxia
+  name: kioxia-pdp
+spec:
+  ports:
+    - port: 8087
+      protocol: TCP
+      targetPort: 8087
+  selector:
+    kioxia.share.station/server: kioxia
