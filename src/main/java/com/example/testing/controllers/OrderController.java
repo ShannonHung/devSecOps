@@ -60,39 +60,43 @@ public class OrderController {
     }
 
     @RequestMapping(value="/order/{orderid}", method = RequestMethod.DELETE)
-    public ResponseEntity<MessageResponse> deleteOrder(@PathVariable("orderid") Integer orderid) {
+    public ResponseEntity<Boolean> deleteOrder(@PathVariable("orderid") Integer orderid) {
         try {
             orderService.deleteOrder(orderid);
-            return ResponseEntity.ok(new MessageResponse(200,"delete order success"));
+            return ResponseEntity.ok(true);
+//            return ResponseEntity.ok(new MessageResponse(200,"delete order success"));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(false);
+//            return ResponseEntity.badRequest().build();
         }
     }
 
 
     @RequestMapping(value="/order/{orderid}/{lineitemid}", method = RequestMethod.DELETE)
-    public ResponseEntity<MessageResponse> deleteOrderLineItem(@PathVariable("orderid") Integer orderid, @PathVariable("lineitemid") Integer lineitemid) {
+    public ResponseEntity<Boolean> deleteOrderLineItem(@PathVariable("orderid") Integer orderid, @PathVariable("lineitemid") Integer lineitemid) {
         try {
             orderService.deleteOrderLineItem(orderid,lineitemid);
-            return ResponseEntity.ok(new MessageResponse(200,"delete lineitem success"));
+            return ResponseEntity.ok(true);
+//            return ResponseEntity.ok(new MessageResponse(200,"delete lineitem success"));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(false);
+//            return ResponseEntity.badRequest().build();
         }
     }
 
     @RequestMapping(value="/order/{orderid}/checkout", method = RequestMethod.POST)
-    public ResponseEntity<MessageResponse> checkout(@PathVariable("orderid") Integer orderid) {
+    public ResponseEntity<Integer> checkout(@PathVariable("orderid") Integer orderid) {
         try {
             int state = orderService.checkout(orderid);
             if(state==1)
-                return ResponseEntity.ok(new MessageResponse(200,"checkouted"));
+                return ResponseEntity.ok(state);
             else if(state==0)
-                return ResponseEntity.ok(new MessageResponse(404,"order id not found"));
+                return ResponseEntity.ok(state);
             else {
-                return ResponseEntity.ok(new MessageResponse(500,"order was checked out "));
+                return ResponseEntity.ok(state);
             }
         } catch (Exception e) {
-            return ResponseEntity.ok(new MessageResponse(500,"no inventory"));
+            return  ResponseEntity.ok(500);
         }
     }
 

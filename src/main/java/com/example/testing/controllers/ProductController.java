@@ -63,22 +63,24 @@ public class ProductController {
     }
 
     @RequestMapping(value="/product/{productsku}", method = RequestMethod.DELETE)
-    public ResponseEntity<MessageResponse> deleteProduct(@PathVariable("productsku") String sku) {
+    public ResponseEntity<Boolean> deleteProduct(@PathVariable("productsku") String sku) {
         try {
             productService.deleteProduct(sku);
-            return ResponseEntity.ok(new MessageResponse(200,"delete product success"));
+            return ResponseEntity.ok(true);
          } catch(Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(false);
         }
     }
 
     @RequestMapping(value="/tag/{tagid}", method = RequestMethod.DELETE)
-    public ResponseEntity<MessageResponse> deleteProductTag(@PathVariable("tagid") Integer iid) {
+    public ResponseEntity<Boolean> deleteProductTag(@PathVariable("tagid") Integer iid) {
         try {
             productService.deleteProductTag(iid);
-            return ResponseEntity.ok(new MessageResponse(200,"delete product tag success"));
+            return ResponseEntity.ok(true);
+//            return ResponseEntity.ok(new MessageResponse(200,"delete product tag success"));
         } catch(Exception e) {
-            return ResponseEntity.badRequest().build();
+//            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(false);
         }
     }
 
