@@ -24,18 +24,37 @@ spec:
         name: mysqlshop
         env:
           - name: MYSQL_ROOT_PASSWORD
-            value: passwd
+            value: csc1234
         resources: {}
         livenessProbe:
           exec:
-            command:["mysqladmin,ping"]
-          initialDelaySeconds:30
-          periodSeconds:10
-          timeoutSeconds:5
-        readlinessProbe:
+            command: ["mysqladmin","ping"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
           exec:
-            command:["mysql",-h,"127.0.0.1","-uroot","-ppassew","-e","SELECT 1"]
-          initialDelaySeconds:5
-          periodSeconds:2
-          timeoutSeconds:1
+            command: ["mysql", "-h","127.0.0.1","-uroot","-ppassew","-e","SELECT 1"]
+          initialDelaySeconds: 5
+          periodSeconds: 2
+          timeoutSeconds: 1
 status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: mysqldb
+  name: mysqldb
+  namespace: test
+spec:
+  ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: 3306
+  selector:
+    app: mysqldb
+  type: ClusterIP
+status:
+  loadBalancer: {}

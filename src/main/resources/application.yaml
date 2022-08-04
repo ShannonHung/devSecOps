@@ -1,5 +1,3 @@
-server.port: 8081
-## 开启数据缓存
 caching:
   enabled: true
 spring:

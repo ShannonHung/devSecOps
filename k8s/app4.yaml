@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: app4
+  name: app4
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app4
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: app4
+    spec:
+      initContainers:
+        - name: init-cont
+          image: busybox
+          command: ['sh','c','while ! nc -z mysqldb 3306; do sleep 1; done;']
+      containers:
+        - image: shannonhung/app2:1.0.0
+          imagePullPolicy: IfNotPresent
+          name: simpleshopmysql
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysqldb:3306/simpleshop
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: passwd
+          resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: app4
+  name: app4
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: app4
+  type: LoadBalancer
+status:
+  loadBalancer: {}
