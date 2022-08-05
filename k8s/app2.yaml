@@ -17,21 +17,17 @@ spec:
       labels:
         app: app2
     spec:
-      initContainers:
-        - name: init-cont
-          image: busybox
-          command: ['sh','c','while ! nc -z mysqldb 3306; do sleep 1; done;']
       containers:
-        - image: shannonhung/app2:1.0.0
+        - image: shannonhung/app2:4.0.0
           imagePullPolicy: IfNotPresent
           name: simpleshopmysql
           ports:
-            - containerPort: 8080
+            - containerPort: 8081
           env:
             - name: SPRING_DATASOURCE_URL
               value: jdbc:mysql://mysqldb:3306/simpleshop
             - name: SPRING_DATASOURCE_PASSWORD
-              value: passwd
+              value: csc1234
           resources: {}
 status: {}
 ---
@@ -41,12 +37,12 @@ metadata:
   creationTimestamp: null
   labels:
     app: app2
-  name: query-app-svc
+  name: app2-svc
 spec:
   ports:
-    - port: 8080
+    - port: 8081
       protocol: TCP
-      targetPort: 8080
+      targetPort: 8081
   selector:
     app: app2
   type: ClusterIP

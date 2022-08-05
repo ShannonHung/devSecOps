@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: mysqldb
+  name: mysqldb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysqldb
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: mysqldb
+    spec:
+      containers:
+        - image: mysql
+          imagePullPolicy: IfNotPresent
+          name: mysqlshop
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: csc1234
+          resources: {}
+#          livenessProbe:
+#            exec:
+#              command: ["mysqladmin","ping"]
+#            initialDelaySeconds: 30
+#            periodSeconds: 10
+#            timeoutSeconds: 5
+#          readinessProbe:
+#            exec:
+#              command: ["mysql", "-h","127.0.0.1","-uroot","-ppassew","-e","SELECT 1"]
+#            initialDelaySeconds: 5
+#            periodSeconds: 2
+#            timeoutSeconds: 1
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mysqldb
+  name: mysqldb
+spec:
+  ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: 3306
+  selector:
+    app: mysqldb

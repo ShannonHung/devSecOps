@@ -6,7 +6,7 @@ metadata:
     app: app1
   name: app1
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: app1
@@ -17,21 +17,12 @@ spec:
       labels:
         app: app1
     spec:
-      initContainers:
-        - name: init-cont
-          image: busybox
-          command: ['sh','c','while ! nc -z mysqldb 3306; do sleep 1; done;']
       containers:
-        - image: shannonhung/app1:1.0.0
+        - image: shannonhung/app1:3.0.0
           imagePullPolicy: IfNotPresent
           name: simpleshopmysql
           ports:
             - containerPort: 8080
-          env:
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:mysql://mysqldb:3306/simpleshop
-            - name: SPRING_DATASOURCE_PASSWORD
-              value: csc1234
           resources: {}
 status: {}
 ---
@@ -52,3 +43,19 @@ spec:
   type: LoadBalancer
 status:
   loadBalancer: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: app1
+  name: app1-svc
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+      nodePort: 30080
+  selector:
+    app: app1
