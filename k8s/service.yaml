@@ -21,7 +21,7 @@ spec:
       initContainers:
       - name: init-cont
         image: busybox
-        command: ['sh','c','while ! nc -z mysqldb 3306; do sleep 1; done;']
+        command: ['sh','-c','while ! nc -z mysqldb 3306; do sleep 1; done;']
       containers:
       - image: shichoc/simpleshopmysql:0.0.1-SNAPSHOT
         imagePullPolicy: IfNotPresent
